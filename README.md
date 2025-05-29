@@ -7,7 +7,7 @@
 4. [Dataset](#dataset)
 5. [Data Loading and Cleaning](#data_loading_and_cleaning)
 6. [Unveiling the Financial Narrative of the Company](#unveiling_the_financial_narrative_of_the_company)
-7. [Conclusion: Strategic Recommendations](#conclusion:_strategic_recommendations)
+7. [Conclusion](#conclusion)
 8. [Dashboard](#dashboard)
 
 # Scope
@@ -21,7 +21,7 @@ To evaluate the financial health of the company by analyzing sales and profit pe
 - Power BI
 
 # Dataset
-- [FestMan Stores Financial Dataset]()
+- [FestMan Stores Financial Dataset](Financial dataset.xlsx)
 The dataset contains financial transaction data for a company selling six products (Carretera, Montana, Paseo, Velo, VTT, Amarilla) across five countries (Canada, France, Germany, Mexico, USA) to five customer segments (Government, Midmarket, Channel Partners, Enterprise, Small Business) from 2013 to 2014.
 
 # Data Loading and Cleaning
@@ -33,22 +33,22 @@ library(ggplot2)
 library(scales)
 
 # Loading the dataset
-data <- read excel("Financial dataset.xlsx")
+data <- read_excel("Financial dataset.xlsx")
 ```
 ```R
 # Cleaning data: Ensure numeric columns are properly typed and handle missing values
 data <- data %>%
   mutate(
-    Units Sold = as.numeric(Units Sold),
-    Manufacturing Price = as.numeric(Manufacturing Price),
-    Sale Price = as.numeric(Sale Price),
-    Gross Sales = as.numeric(Gross Sales),
+    `Units Sol` = as.numeric(`Units Sold`),
+    `Manufacturing Price` = as.numeric(`Manufacturing Price`),
+    `Sale Price` = as.numeric(`Sale Price`),
+    `Gross Sales` = as.numeric(`Gross Sales`),
     Discounts = as.numeric(Discounts),
     Sales = as.numeric(Sales),
     COGS = as.numeric(COGS),
     Profit = as.numeric(Profit),
     Date = as.Date(Date, origin = "1899-12-30"),
-    Month Number = as.integer(Month Number),
+    `Month Number` = as.integer(`Month Number`),
     Year = as.integer(Year)
   ) %>%
   filter(!is.na(Sales) & !is.na(Profit)) # Remove rows with missing sales or profit
@@ -61,10 +61,10 @@ Our first step is to assess the overall financial performance.
 # Calculating overall summary statistics
 overall_summary <- data %>%
   summarise(
-    Total Sales = sum(Sales, na.rm = TRUE),
-    Total Profit = sum(Profit, na.rm = TRUE),
-    Total Discounts = sum(Discounts, na.rm = TRUE),
-    Average Profit Margin = mean(Profit / Sales * 100, na.rm = TRUE)
+    `Total Sales` = sum(Sales, na.rm = TRUE),
+    `Total Profit` = sum(Profit, na.rm = TRUE),
+    `Total Discounts` = sum(Discounts, na.rm = TRUE),
+    `Average Profit Margin` = mean(Profit / Sales * 100, na.rm = TRUE)
   )
 
 # Printing overall summary
@@ -138,15 +138,12 @@ sales_by_country_plot <- ggplot(country_summary, aes(x = reorder(Country, `Total
   theme_minimal()
 ```
 ```R
-# Analyzing sales and profit by product
-product_summary <- data %>%
-  group_by(Product) %>%
-  summarise(
-    `Total Sales` = sum(Sales, na.rm = TRUE),
-    `Total Profit` = sum(Profit, na.rm = TRUE),
-    `Profit Margin` = mean(Profit / Sales * 100, na.rm = TRUE)
-  ) %>%
-  arrange(desc(`Total Sales`))
+# Visualizing profit margin by country
+profit_margin_country_plot <- ggplot(country_summary, aes(x = reorder(Country, `Profit Margin`), y = `Profit Margin`)) +
+ geom_bar(stat = "identity", aes(fill = ifelse(`Profit Margin` > 0, "red", "forestgreen")))+ 
+coord_flip() + 
+labs(title = "Profit Margin by Country", x = "Country", y = "Profit Margin (%)",fill = "Profit Margin Status") + 
+theme_minimal()
 ```
 - **Germany** and the **United States** lead in sales volume, indicating **strong market presence**.
 - **Canada** stands out in profitability, achieving a **30% profit margin**, largely due to high-value Government contracts.
@@ -165,6 +162,16 @@ product_summary <- data %>%
   ) %>%
   arrange(desc(`Total Sales`))
 
+# Visualizing sales by country
+sales_by_product_plot <- ggplot(product_summary, aes(x = reorder(Product, `Total Sales`), y = `Total Sales`)) +
+  geom_bar(stat = "identity", fill = "lightblue") +
+  coord_flip() +
+  labs(title = "Total Sales by Product", x = "Product", y = "Sales ($)") +
+  scale_y_continuous(labels = dollar_format()) +
+  theme_minimal()
+```
+
+```R
 # Visualizing profit margin by product
 profit_margin_product_plot <- ggplot(product_summary, aes(x = reorder(Product, `Profit Margin`), y = `Profit Margin`)) +
   geom_bar(stat = "identity", fill = "purple") +
@@ -190,12 +197,27 @@ discount_summary <- data %>%
   ) %>%
   arrange(desc(`Average Discount`))
 
-# Visualizing profit margin by discount band
-discount_profit_plot <- ggplot(discount_summary, aes(x = `Discount Band`, y = `Profit Margin`, fill = `Discount Band`)) +
-  geom_bar(stat = "identity") +
-  labs(title = "Profit Margin by Discount Band", x = "Discount Band", y = "Profit Margin (%)") +
-  theme_minimal() +
-  scale_fill_brewer(palette = "Set1")
+# Total Sales and Profit by Discount Band
+sales_profit_plot <- ggplot(discount_summary, aes(x = `Discount Band`)) +
+  geom_bar(aes(y = `Total Sales`, fill = "Sales"), stat = "identity", position = "dodge") +
+  geom_bar(aes(y = `Total Profit`, fill = "Profit"), stat = "identity", position = "dodge") +
+  scale_y_continuous(labels = dollar_format()) +
+  labs(title = "Sales vs Profit by Discount Band", y = "Amount ($)", x = "Discount Band") +
+  scale_fill_manual(name = "Metric", values = c("Sales" = "steelblue", "Profit" = "firebrick")) +
+  theme_minimal()
+```
+```R
+# Discounts vs. Profit Margin Scatter Plot (by deal)
+scatter_plot <- data %>%
+  mutate(
+    `Discount %` = Discounts / `Gross Sales` * 100,
+    `Profit Margin %` = Profit / Sales * 100
+  ) %>%
+  ggplot(aes(x = `Discount %`, y = `Profit Margin %`, color = Segment)) +
+  geom_point(alpha = 0.6) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  labs(title = "Discount % vs. Profit Margin %", x = "Discount (%)", y = "Profit Margin (%)") +
+  theme_minimal()
 ```
 - Discounts, ranging from 0% to 15%, have a significant impact on profitability.
 - High-discount deals, particularly in the Enterprise segment, often lead to negative profits. For example, a $305,125 sale of Carretera to Enterprise clients in France (October 2014) resulted in a $21,358 loss due to a 15% discount.
@@ -227,23 +249,23 @@ sales_trend_plot <- ggplot(monthly_sales, aes(x = Date, y = `Total Sales`)) +
 ```R
 # Printing segment summary for reference
 cat("\nSegment Summary:\n")
-print(segment summary)
+print(segment_summary)
 
 # Printing country summary for reference
 cat("\nCountry Summary:\n")
-print(country summary)
+print(country_summary)
 
 # Printing product summary for reference
 cat("\nProduct Summary:\n")
-print(product summary)
+print(product_summary)
 
 # Printing discount summary for reference
 cat("\nDiscount Summary:\n")
-print(discount summary)
+print(discount_summary)
 ```
 An intriguing finding: Channel Partners, despite low sales prices ($12), achieve a 66% profit margin due to low COGS. This segment, while small in revenue, is a hidden gem for profitability.
 
-# Conclusion: Strategic Recommendations
+# Conclusion
 The company is financially robust but faces challenges in Enterprise profitability and discount management. To optimize performance:
 1. **Reevaluate Enterprise Pricing**: Adjust pricing or reduce discounts to ensure positive margins.
 2. **Expand Channel Partners**: Leverage their high margins by increasing their share of sales.
