@@ -85,10 +85,10 @@ cat(sprintf("Average Profit Margin: %.2f%%\n", overall_summary$`Average Profit M
       <img src="png/data.total.png"/>
   </center>
   
-- The dataset reveals **total sales** of approximately **$26.6 million**.
-- **Profits** total **$5.5 million**, **after accounting** for **$1.4 million in discounts**.
-- This indicates a **healthy revenue stream** but a **profit margin of around 21%**, pointing to **variations in profitability** across segments.
-- Discount levels vary across transactions: "None," "Low," "Medium," and "High".
+- The dataset reveals **total sales** of approximately **$118.7 million**.
+- **Profits** total **$16.9 million**, **after accounting** for **$9.2 million in discounts**.
+- This indicates a **healthy revenue stream** but a **profit margin of around 27.9**, pointing to **variations in profitability** across segments.
+- Discount levels vary across transactions: **"None," "Low," "Medium," and "High"**.
 > These variations prompt further analysis into the impact of discounts on overall profitability.
 
 ## Segment Spotlight - Who Drives the Profits?
@@ -128,8 +128,8 @@ theme_minimal()
   </center>
   
 > Breaking down the data by customer segment—Government, Midmarket, Channel Partners, Enterprise, and Small Business—we find that:
-- The **Small Business** and **Government** segments are the **top contributors**, accounting for **38%** and **34%** of total sales, respectively. However, **profitability varies significantly** across segments.
-- **Small Business** delivers a strong **26% profit margin**. In contrast, the **Enterprise** segment operates at a **loss**, with a **-3%** profit margin. The loss in the Enterprise segment is primarily due to **high COGS**, especially for **high-priced products like VTT and Amarilla**.
+- The **Small Business** and **Government** segments are the **top contributors**, accounting for **36%** and **44%** of total sales, respectively. However, **profitability varies significantly** across segments.
+- **Channel Partners** delivers a strong **70% profit margin**. In contrast, the **Enterprise** segment operates at a **loss**, with a **-3%** profit margin. The loss in the Enterprise segment is primarily due to **high COGS**, especially for **high-priced products like VTT and Amarilla**.
 > This highlights the need to reassess pricing strategies or cost structures for Enterprise clients to improve profitability.
 
 ## Geographic Gems and Challenges
@@ -168,10 +168,10 @@ theme_minimal()
       <img src="png/profit.margin.country.plot.png"/>
   </center>
   
-- **Germany** and the **United States** lead in sales volume, indicating **strong market presence**.
-- **Canada** stands out in profitability, achieving a **30% profit margin**, largely due to high-value Government contracts.
-- **Mexico** shows **strong sales but a lower profit margin (18%)**, impacted by **heavy discounts** in **Small Business and Government** segments.
-- **France** maintains a **steady but modest performance**, suggesting **untapped potential and room for market growth**.
+- **Canada** and the **United States** lead in sales volume, indicating **strong market presence**.
+- **Germany** shows consistent performance in both sales and profitability, reinforcing its position as a stable market.
+- **France** delivers competitive sales levels with a positive profit margin, suggesting reliable operations and potential for further optimization.
+- **Mexico** trails slightly in total sales compared to others but maintains a positive profit margin, indicating effective cost management despite smaller revenue.
 
 ## Product Performance - Stars and Stragglers
 ```R
@@ -209,11 +209,11 @@ profit_margin_product_plot <- ggplot(product_summary, aes(x = reorder(Product, `
       <img src="png/profit.margin.product.plot.png"/>
   </center>
   
-- VTT and Amarilla lead in sales volume, driven by their high sale prices ($250–$300).
-- Carretera and Montana offer higher profit margins (30% and 28%) due to lower manufacturing costs.
-- Paseo, a mid-tier product, is a consistent performer across segments, making it a reliable cash cow.
-- Velo shows inconsistent profitability, especially in Enterprise deals, where discounts significantly reduce margins.
-
+- **Paseo** leads in total sales, generating over **$30 million**, indicating strong demand and broad market appeal.
+- **VTT** and **Velo** show **solid sales performance**, with VTT slightly ahead; however, Velo faces margin challenges due to discounts in Enterprise deals.
+- **Amarilla** combines **moderate sales with a high profit margin**, reflecting effective pricing strategy and cost control.
+- **Carretera** and **Montana** stand out in profitability, both achieving **profit margins above 28%**, thanks to lower production costs despite lower sales volumes.
+  
 ## The Discount Dilemma
 ```R
 # Analyzing impact of discounts
@@ -282,9 +282,9 @@ sales_trend_plot <- ggplot(monthly_sales, aes(x = Date, y = `Total Sales`)) +
       <img src="png/sales.trend.plot.png"/>
   </center>
   
-- Sales peak in December each year, primarily driven by Government contracts.
-- June experiences a surge in activity from Midmarket and Channel Partners.
-- Profitability dips in Q3 (July–September) due to aggressive discounting during this period.
+- **Sales peak in Q4(Sep-Dec)** each year, primarily driven by Government contracts.
+- **June** experiences a **mid-year sales spike** in activity from Midmarket and Channel Partners.
+- **Profitability dips in Q3 (July–September)** due to aggressive discounting during this period.
 > This seasonal pattern suggests the need to align marketing efforts with high-demand periods and tighten discount controls in Q3.
 
 ## The Unexpected Twist 
@@ -309,7 +309,8 @@ print(discount_summary)
       <img src="png/data.summary.png"/>
   </center>
   
-An intriguing finding: Channel Partners, despite low sales prices ($12), achieve a 66% profit margin due to low COGS. This segment, while small in revenue, is a hidden gem for profitability.
+**An intriguing finding**: 
+**Channel Partners**, while contributing **the least in revenue**, achieve a **exceptional 73% profit margin** due to low COGS. This segment, while small in revenue, is a hidden gem for profitability.
 
 # Conclusion
 The company is financially robust but faces challenges in Enterprise profitability and discount management. To optimize performance:
