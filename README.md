@@ -53,6 +53,13 @@ data <- data %>%
   ) %>%
   filter(!is.na(Sales) & !is.na(Profit)) # Remove rows with missing sales or profit
 ```
+```R
+glimpse(data)
+```
+<center>
+      <img src="png/data.glimpse.png"/>
+  </center>
+  
 # Unveiling the Financial Narrative of the Company
 Our first step is to assess the overall financial performance.
 
@@ -75,7 +82,7 @@ cat(sprintf("Total Discounts: $%s\n", format(overall_summary$`Total Discounts`, 
 cat(sprintf("Average Profit Margin: %.2f%%\n", overall_summary$`Average Profit Margin`))
 ```
 <center>
-      <img src="png/table.info1.png" width="900" />
+      <img src="png/data.total.png"/>
   </center>
   
 - The dataset reveals **total sales** of approximately **$26.6 million**.
@@ -104,6 +111,10 @@ sales_by_segment_plot <- ggplot(segment_summary, aes(x = reorder(Segment, `Total
   scale_y_continuous(labels = dollar_format()) +
   theme_minimal()
 ```
+<center>
+      <img src="png/sales.by.segment.plot.png"/>
+  </center>
+ 
 ```R
 # Visualizing profit margin by segment
 profit_margin_segment_plot <- ggplot(segment_summary, aes(x = reorder(Segment, `Profit Margin`), y = `Profit Margin`)) +
@@ -112,6 +123,10 @@ coord_flip() +
 labs(title = "Profit Margin by Segment", x = "Segment", y = "Profit Margin (%)",fill = "Profit Margin Status") + 
 theme_minimal()
 ```
+<center>
+      <img src="png/profit.margin.segment.plot.png"/>
+  </center>
+  
 > Breaking down the data by customer segment—Government, Midmarket, Channel Partners, Enterprise, and Small Business—we find that:
 - The **Small Business** and **Government** segments are the **top contributors**, accounting for **38%** and **34%** of total sales, respectively. However, **profitability varies significantly** across segments.
 - **Small Business** delivers a strong **26% profit margin**. In contrast, the **Enterprise** segment operates at a **loss**, with a **-3%** profit margin. The loss in the Enterprise segment is primarily due to **high COGS**, especially for **high-priced products like VTT and Amarilla**.
@@ -137,6 +152,10 @@ sales_by_country_plot <- ggplot(country_summary, aes(x = reorder(Country, `Total
   scale_y_continuous(labels = dollar_format()) +
   theme_minimal()
 ```
+<center>
+      <img src="png/sales.by.country.plot.png"/>
+  </center>
+  
 ```R
 # Visualizing profit margin by country
 profit_margin_country_plot <- ggplot(country_summary, aes(x = reorder(Country, `Profit Margin`), y = `Profit Margin`)) +
@@ -145,6 +164,10 @@ coord_flip() +
 labs(title = "Profit Margin by Country", x = "Country", y = "Profit Margin (%)",fill = "Profit Margin Status") + 
 theme_minimal()
 ```
+<center>
+      <img src="png/profit.margin.country.plot.png"/>
+  </center>
+  
 - **Germany** and the **United States** lead in sales volume, indicating **strong market presence**.
 - **Canada** stands out in profitability, achieving a **30% profit margin**, largely due to high-value Government contracts.
 - **Mexico** shows **strong sales but a lower profit margin (18%)**, impacted by **heavy discounts** in **Small Business and Government** segments.
@@ -170,7 +193,10 @@ sales_by_product_plot <- ggplot(product_summary, aes(x = reorder(Product, `Total
   scale_y_continuous(labels = dollar_format()) +
   theme_minimal()
 ```
-
+<center>
+      <img src="png/sales.by.product.plot.png"/>
+  </center>
+  
 ```R
 # Visualizing profit margin by product
 profit_margin_product_plot <- ggplot(product_summary, aes(x = reorder(Product, `Profit Margin`), y = `Profit Margin`)) +
@@ -179,6 +205,10 @@ profit_margin_product_plot <- ggplot(product_summary, aes(x = reorder(Product, `
   labs(title = "Profit Margin by Product", x = "Product", y = "Profit Margin (%)") +
   theme_minimal()
 ```
+<center>
+      <img src="png/profit.margin.product.plot.png"/>
+  </center>
+  
 - VTT and Amarilla lead in sales volume, driven by their high sale prices ($250–$300).
 - Carretera and Montana offer higher profit margins (30% and 28%) due to lower manufacturing costs.
 - Paseo, a mid-tier product, is a consistent performer across segments, making it a reliable cash cow.
@@ -206,6 +236,10 @@ sales_profit_plot <- ggplot(discount_summary, aes(x = `Discount Band`)) +
   scale_fill_manual(name = "Metric", values = c("Sales" = "steelblue", "Profit" = "firebrick")) +
   theme_minimal()
 ```
+<center>
+      <img src="png/sales.profit.plot.png"/>
+  </center>
+  
 ```R
 # Discounts vs. Profit Margin Scatter Plot (by deal)
 scatter_plot <- data %>%
@@ -219,6 +253,10 @@ scatter_plot <- data %>%
   labs(title = "Discount % vs. Profit Margin %", x = "Discount (%)", y = "Profit Margin (%)") +
   theme_minimal()
 ```
+<center>
+      <img src="png/scatter.plot.png"/>
+  </center>
+  
 - Discounts, ranging from 0% to 15%, have a significant impact on profitability.
 - High-discount deals, particularly in the Enterprise segment, often lead to negative profits. For example, a $305,125 sale of Carretera to Enterprise clients in France (October 2014) resulted in a $21,358 loss due to a 15% discount.
 > This highlights the need for a more strategic discount policy to protect profit margins.
@@ -240,6 +278,10 @@ sales_trend_plot <- ggplot(monthly_sales, aes(x = Date, y = `Total Sales`)) +
   scale_x_date(date_labels = "%b %Y", date_breaks = "3 month") +
   theme_minimal()
 ```
+<center>
+      <img src="png/sales.trend.plot.png"/>
+  </center>
+  
 - Sales peak in December each year, primarily driven by Government contracts.
 - June experiences a surge in activity from Midmarket and Channel Partners.
 - Profitability dips in Q3 (July–September) due to aggressive discounting during this period.
@@ -263,6 +305,10 @@ print(product_summary)
 cat("\nDiscount Summary:\n")
 print(discount_summary)
 ```
+<center>
+      <img src="png/data.summary.png"/>
+  </center>
+  
 An intriguing finding: Channel Partners, despite low sales prices ($12), achieve a 66% profit margin due to low COGS. This segment, while small in revenue, is a hidden gem for profitability.
 
 # Conclusion
@@ -276,3 +322,7 @@ This financial story sets the stage for data-driven decisions to steer the compa
 
 # Dashboard
 - [Link to dashboard](https://app.powerbi.com/groups/me/reports/fcedc79e-ea46-43c2-b973-be45ab0993d8?ctid=588b13a3-653b-4cf7-8ac0-59847eb2dc88&pbi_source=linkShare)
+  
+<center>
+      <img src="png/dashboard.png"/>
+  </center>
